@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chúc mừng sinh nhat iu</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background:#050505;
+      overflow:hidden;
+      height:100vh;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    html, body, * {
+   cursor: url("./cat-cursor.png.png") 16 16, auto !important;
+}
+    
+    canvas { position:absolute; inset:0; }
+    
+    
+    .center {
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:5;
+    }
+    
+    
+    .pixel-text {
+      color:#ffb6c1;
+      font-size:90px;
+      font-weight:700;
+      letter-spacing:6px;
+      text-align:center;
+      filter: drop-shadow(0 0 10px #ff9bb5);
+    }
+    
+    
+    .small { font-size:70px; }
+    
+    
+    .heart { color:#ff4d6d; }
+    
+    #fadeOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgb(216, 253, 208);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 2.5s ease;
+      z-index: 20;
+    }
+
+  </style>
+</head>
+<body>
+  
+  <canvas id="bg"></canvas>
+  <canvas id="fx"></canvas>
+
+  <div id="fadeOverlay"></div>
+  
+  <div class="center">
+  <canvas id="textCanvas"></canvas>
+  </div>
+  
+  <audio id="music" src="nhac.mp3"></audio>
+  
+  <script>
+  
+  const NEXT_PAGE = 'page5.html';
+  
+  const texts = [
+    '3','2','1',
+    'HAPPY BIRTHDAY',
+    'LINH ♥',
+    '23/12/2007',
+    'HAPPY 18+'
+  ];
+  
+  document.addEventListener('click', () => {
+  document.getElementById('music').play();
+  }, { once:true });
+  
+  const tc = document.getElementById('textCanvas');
+  const t = tc.getContext('2d');
+  tc.width = innerWidth;
+  tc.height = innerHeight;
+  
+  
+  let dots = [];
+  let currentText = 0;
+  
+  
+  function createDots(text) {
+    t.clearRect(0,0,tc.width,tc.height);
+    t.fillStyle = '#ffb6c1';
+    t.font = 'bold 120px Arial Black';
+    t.textAlign = 'center';
+    t.textBaseline = 'middle';
+    t.fillText(text, tc.width/2, tc.height / 2 + 20 );
+  
+  
+   const img = t.getImageData(0,0,tc.width,tc.height).data;
+    dots = [];
+    for (let y=0;y<tc.height;y+=5) {
+      for (let x=0;x<tc.width;x+=5) {
+        if (img[(y*tc.width+x)*4+3] > 150) {
+          dots.push({
+            x: Math.random()*tc.width,
+            y: Math.random()*tc.height,
+            tx:x,
+            ty:y
+          });
+        }
+      }
+    }
+  }
+  
+  function animateDots() {
+    t.clearRect(0,0,tc.width,tc.height);
+    dots.forEach(d=>{
+      d.x += (d.tx - d.x)*0.08;
+      d.y += (d.ty - d.y)*0.08;
+      t.fillStyle = '#ffb6c1';
+      t.beginPath();
+      t.arc(d.x,d.y,3,0,Math.PI*2);
+      t.fill();
+    });
+    requestAnimationFrame(animateDots);
+  }
+  
+  function nextText() {
+  createDots(texts[currentText]);
+
+  // nếu là dòng cuối
+  if (currentText === texts.length - 1) {
+    // giữ lâu 5 giây rồi mới chuyển page
+    setTimeout(() => {
+      startFadeOut();
+    }, 5000);
+    return;
+  }
+
+  currentText++;
+
+  // thời gian giữa các dòng
+  setTimeout(
+    nextText,
+    currentText < 3 ? 1400 : 1800
+  );
+}
+
+animateDots();
+
+// ⏱️ vào page đợi 3s rồi mới bắt đầu hiện số 3
+setTimeout(nextText, 3000);
+  
+  const bg = document.getElementById('bg');
+  const b = bg.getContext('2d');
+  
+  bg.width = innerWidth;
+  bg.height = innerHeight;
+  
+  const chars = 'HAPPYBIRTHDAYLINH';
+  const fontSize = 16;
+  const cols = Math.floor(bg.width / fontSize);
+  const drops = Array(cols).fill(0);
+  
+  function rain() {
+    b.fillStyle = 'rgba(0,0,0,0.08)';
+    b.fillRect(0,0,bg.width,bg.height);
+    b.fillStyle = '#ff9bb5';
+    b.font = fontSize + 'px monospace';
+  
+    for (let i=0;i<drops.length;i++) {
+      const text = chars[Math.floor(Math.random()*chars.length)];
+      b.fillText(text, i*fontSize, drops[i]*fontSize);
+      if (drops[i]*fontSize > bg.height && Math.random() > 0.975) drops[i]=0;
+      drops[i]++;
+    }
+  }
+  const rainTimer = setInterval(rain, 50);
+  
+  // ====== HEART & PETAL FX ======
+  const fx = document.getElementById('fx');
+  const f = fx.getContext('2d');
+  fx.width = innerWidth;
+  fx.height = innerHeight;
+  
+  const particles = [];
+
+  function drawHeart(ctx, x, y, size) {
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.bezierCurveTo(
+    x - size, y - size,
+    x - size * 1.5, y + size / 2,
+    x, y + size * 1.2
+  );
+  ctx.bezierCurveTo(
+    x + size * 1.5, y + size / 2,
+    x + size, y - size,
+    x, y
+  );
+  ctx.closePath();
+  ctx.fill();
+}
+  
+  function spawn() {
+  particles.push({
+  x: Math.random()*fx.width,
+  y: fx.height+20,
+  s: Math.random()*8+6,
+  v: Math.random()*1+0.5,
+  r: Math.random(),
+  type: Math.random()>0.5?'heart':'petal'
+  });
+  }
+  
+  function draw() {
+    f.clearRect(0,0,fx.width,fx.height);
+    particles.forEach(p=>{
+      p.y -= p.v;
+      p.x += Math.sin(p.r)*0.5;
+      p.r += 0.02;
+      f.fillStyle = p.type==='heart' ? '#ff4d6d' : '#ffb6c1';
+      f.beginPath();
+      if (p.type === 'heart') {
+        f.fillStyle = '#ff4d6d';
+        drawHeart(f, p.x, p.y, p.s / 2);
+      } else {
+        f.fillStyle = '#ffb6c1';
+        f.beginPath();
+        f.ellipse(p.x, p.y, p.s, p.s / 2, p.r, 0, Math.PI * 2);
+        f.fill();
+}
+      f.fill();
+    });
+    for (let i=particles.length-1;i>=0;i--) if (particles[i].y < -30) particles.splice(i,1);
+  }
+  
+  const spawnTimer = setInterval(spawn, 180);
+  (function loop(){ draw(); requestAnimationFrame(loop); })();
+  
+  window.onresize = () => {
+  bg.width = fx.width = innerWidth;
+  bg.height = fx.height = innerHeight;
+  };
+
+  function startFadeOut() {
+  const overlay = document.getElementById('fadeOverlay');
+
+  // hiện nền xanh lá mờ dần
+  overlay.style.opacity = '1';
+
+  // dừng mưa chữ
+  clearInterval(rainTimer);
+
+  // dừng sinh hạt
+  clearInterval(spawnTimer);
+
+  // chuyển page sau khi fade xong
+  setTimeout(() => {
+    location.href = NEXT_PAGE;
+  }, 2500);
+  }
+
+  </script>
+  
+</body>
+</html>

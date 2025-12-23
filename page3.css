@@ -1,0 +1,517 @@
+html, body, * {
+   cursor: url("./cat-cursor.png.png") 16 16, auto !important;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  background: #896faf;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  transition: background 2s ease;
+}
+.title-line {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: 3px;
+  color: #f3a5c7;
+  margin-bottom: 16px;
+  opacity: 0;
+  transform: scale(0.9);
+  pointer-events: none;
+}
+
+.title-line.show {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.title-line span {
+  display: inline-block;
+  opacity: 0.8;
+}
+.title-line .space {
+  width: 12px;
+}
+
+@keyframes letterZoom {
+  0%   { transform: scale(1); opacity: 0.8; }
+  50%  { transform: scale(1.35); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.8; }
+}
+
+.title-line.animate span:not(.space) {
+  animation: letterZoom 1.6s ease-in-out infinite;
+}
+
+.title-line.fade-out {
+  animation: titleLeave 1.2s ease forwards;
+}
+
+@keyframes titleLeave {
+  to {
+    transform: translateY(20px) scale(0.9);
+    opacity: 0;
+    filter: blur(2px);
+  }
+}
+
+.calendar-wrapper {
+  position: relative;
+  width: min(90vw, 350px);
+  opacity: 0;
+  transform: translateX(120%);
+  transition: 1.2s ease;
+}
+
+.calendar-wrapper.enter {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.calendar {
+  background: rgba(255,255,255,0.15);
+  border: 2px solid white;
+  border-radius: 20px;
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+}
+
+.calendar-header {
+  text-align: right;
+  padding: 20px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #2d1b3f;
+  border-bottom: 2px solid rgb(247, 207, 207);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.calendar-header.hidden {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.calendar-header.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr); /* 7 cột ngang */
+  padding: 12px 15px 6px;
+  gap: 8px;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 600;
+  color: #f5eaff;
+}
+
+.calendar-weekdays div {
+  opacity: 0.85;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 10px 15px 15px;
+  gap: 8px;
+}
+
+.day-cell {
+  border: 1.5px solid white;
+  border-radius: 8px;
+  padding: 10px 0;
+  text-align: center;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: 0.3s ease;
+}
+
+.day-cell.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.day-cell.heart {
+  position: relative;
+}
+
+@keyframes drawHeart {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.heart-svg {
+  position: absolute;
+  inset: 0.5px;
+  stroke-dasharray: 320;
+  stroke-dashoffset: 320;
+  animation: drawHeart 4s ease forwards;
+}
+
+.day-cell.heart {
+  position: relative;
+  color: black;
+  font-size: 18px;
+}
+
+.day-cell.heart span {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
+
+.day-cell.heart.pulse {
+  animation: pulseHeart 1.2s infinite;
+}
+
+@keyframes pulseHeart {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+.day-cell.heart {
+  filter:
+    drop-shadow(0 0 6px rgba(255, 77, 109, 0.8))
+    drop-shadow(0 0 14px rgba(255, 77, 109, 0.6));
+}
+
+.corner {
+  position: absolute;
+  width: 160px;
+  opacity: 1;
+  stroke-dasharray: 300;
+  stroke-dashoffset: 300;
+  animation: drawLine 1.5s ease forwards;
+  animation-play-state: paused;
+  z-index: 1; /* dưới lịch */
+  pointer-events: none;
+}
+
+.calendar-wrapper {
+  z-index: 2;
+  position: relative;
+}
+
+/* vị trí */
+.cake {
+  bottom: -30px;
+  left: -20px;
+  transform: rotate(20deg);
+}
+
+/* góc trên phải */
+.letter {
+  top: -35px;
+  right: -20px;
+  transform: rotate(15deg);
+}
+
+/* góc trên trái */
+.balloons {
+  top: -20px;
+  left: -30px;
+  transform: rotate(20deg);
+}
+
+/* góc dưới phải */
+.gift {
+  bottom: -30px;
+  right: -25px;
+  transform: rotate(30deg);
+}
+
+/* animation vẽ */
+@keyframes drawLine {
+  to {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+.corner path,
+.corner rect,
+.corner line,
+.corner ellipse,
+.corner polyline {
+  vector-effect: non-scaling-stroke;
+  stroke: rgb(190, 180, 180);
+  stroke-width: 2.5;
+  fill: none;
+}
+
+.day-cell.heart span {
+  z-index: 2;
+  color: #2d1b3f; /* tím đậm hoặc đen */
+  background: transparent;
+}
+
+.heart-svg {
+  z-index: 1;
+}
+
+.calendar-wrapper {
+  transition: transform 2s linear, filter 2s;
+}
+
+.fixed-heart {
+  filter:
+    drop-shadow(0 0 6px rgba(255,77,109,0.8))
+    drop-shadow(0 0 14px rgba(255,77,109,0.6));
+}
+
+@keyframes jumpNumber {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.5); }
+  70%  { transform: scale(0.85); }
+  100% { transform: scale(1); }
+}
+
+.day-cell span {
+  display: inline-block;
+}
+
+.day-cell.jump span {
+  animation: jumpNumber 0.08s linear;
+}
+
+@keyframes jumpFast {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.4); }
+  70%  { transform: scale(0.85); }
+  100% { transform: scale(1); }
+}
+
+.day-cell.jump span {
+  animation: jumpFast 0.1s linear;
+}
+
+@keyframes zoomShake {
+  0%   { transform: scale(1) translateX(0); }
+  25%  { transform: scale(1.08) translateX(-2px); }
+  50%  { transform: scale(1.1) translateX(2px); }
+  75%  { transform: scale(1.05) translateX(-1px); }
+  100% { transform: scale(1) translateX(0); }
+}
+
+@keyframes zoomSoft {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* header */
+.calendar-header.zoom-end {
+  animation: zoomShake 0.6s ease;
+}
+
+/* số 23 */
+.day-cell.heart span.zoom-end {
+  animation: zoomShake 0.6s ease;
+}
+
+/* viền ô 23 */
+.day-cell.heart.zoom-border {
+  animation: zoomSoft 0.5s ease;
+}
+
+/* == RUNG LIÊN TỤC == */
+@keyframes gentleShake {
+  0%   { transform: translateX(0) scale(1); }
+  25%  { transform: translateX(-1px) scale(1.03); }
+  50%  { transform: translateX(1px) scale(1.05); }
+  75%  { transform: translateX(-1px) scale(1.03); }
+  100% { transform: translateX(0) scale(1); }
+}
+
+.heart-attention {
+  animation: gentleShake 1.2s ease-in-out infinite;
+  cursor: pointer;
+}
+
+/* == TIM RƠI == */
+
+/* == GIÓ THỔI == */
+@keyframes windBlow {
+  to {
+    transform: translateX(-120vw) rotate(-2deg);
+    opacity: 0;
+  }
+}
+
+.wind-blow {
+  animation: windBlow 1.8s ease-in forwards;
+}
+
+/* == NỀN ĐỔI MÀU == */
+body.wind-bg {
+  background: #1b1c1b; /* xanh lá nhạt */
+  transition: background 2s ease;
+}
+
+/* == TIM RƠI == */
+.heart-fall {
+  animation: heartFall 2s ease-in forwards;
+  pointer-events: none;
+}
+
+@keyframes heartFall {
+  0% {
+    transform: translate(0,0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+
+  40% {
+    transform: translate(calc(var(--tx) * 0.4), calc(var(--ty) * 0.4))
+               rotate(-12deg) scale(0.95);
+  }
+
+  70% {
+    transform: translate(calc(var(--tx) * 0.7), calc(var(--ty) * 0.7))
+               rotate(12deg) scale(0.9);
+  }
+
+  100% {
+    transform: translate(var(--tx), var(--ty))
+               rotate(0deg) scale(0.85);
+    opacity: 0;
+  }
+}
+
+svg.heart-fall {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.falling-heart-wrapper {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.corner.wind-blow {
+  animation: windBlow 1.8s ease-in forwards !important;
+}
+
+/* == HIỆU ỨNG NỀN == */
+.confetti-bg {
+  position: fixed;
+  top: -20px;
+  pointer-events: none;
+  z-index: 0; /* dưới lịch */
+  opacity: 0.8;
+  animation: confettiFloat linear forwards;
+}
+
+/* ruy băng */
+.ribbon {
+  width: 10px;
+  height:4px;
+  background: linear-gradient(45deg, #ff8fb1, #ffd1e8);
+  border-radius: 4px;
+}
+
+/* sao */
+.star {
+  width: 16px;
+  height: 16px;
+  background: gold;
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+}
+
+/* rơi lững lờ */
+@keyframes confettiFloat {
+  from {
+    transform: translateY(-30px) rotate(0deg);
+    opacity: 0.9;
+  }
+  to {
+    transform: translateY(110vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .calendar-wrapper {
+    width: 94vw;
+    transform: scale(1.08);
+  }
+
+  .calendar {
+    border-radius: 26px;
+  }
+
+  .calendar-header {
+    font-size: 22px;
+    padding: 22px;
+  }
+
+  .calendar-weekdays {
+    font-size: 18px;
+  }
+
+  .day-cell {
+    padding: 14px 0;
+    font-size: 18px;
+  }
+
+  /* tiêu đề BIRTHDAY MY LOVE */
+  .title-line {
+    font-size: 26px;
+    letter-spacing: 4px;
+  }
+}
+
+.space {
+  position: absolute;
+  text-align: center;
+  right: 170px;
+  bottom:-100px;
+  opacity: 0;              /* ẨN BAN ĐẦU */
+  transform: scale(0.8);   /* nhỏ nhẹ */
+  animation: showSticker 0.6s ease forwards;
+  animation-delay: 3.5s; 
+}
+
+.space img {
+  width: 120px;
+  height: auto;
+}
+
+@keyframes showSticker {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

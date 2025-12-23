@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Chúc mừng sinh nhat iu</title>
+  <link rel="stylesheet" href="page2.css">
+</head>
+<body>
+
+  <canvas id="heartRain"></canvas>
+
+  <!-- bảng điều khiển -->
+  <div class="panel" id="passwordPanel">
+    <h2 class="panel-title">NHẬP MẬT KHẨU ĐỂ MỞ IU NHÉ :></h2>
+
+    <input 
+      type="password" 
+      id="passwordInput" 
+      placeholder="Nhập mật khẩu..."
+    >
+
+    <p id="hint" class="blink">Iu nhập mật khẩu đi nào:D</p>
+
+    <button id="openBtn">MỞ</button>
+    
+    <span class="space">
+       <img width="40px" height="40px" src="https://media.tenor.com/VDuhxv4Z7SAAAAAm/hii-excited.webp" alt=""><br>
+    </span>
+  </div>
+  <!-- thanh loading (ẩn ban đầu) -->
+<div class="loading-panel hidden" id="loadingPanel">
+
+  <div class="progress-wrapper">
+    <div class="heart h0"></div>
+    <div class="heart h50"></div>
+    <div class="heart h100"></div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <p class="loading-text" id="loadingText">LOADING LOVE...</p>
+  <button id="nextBtn" class="next-btn hidden">➱</button>
+</div>
+
+  <script src="page2.js"></script>
+</body>
+</html>
